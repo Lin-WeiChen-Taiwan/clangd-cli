@@ -1,0 +1,4 @@
+interface:
+  display_name: "clangd C++ Queries"
+  short_description: "Query C/C++ semantics through clangd-cli"
+  default_prompt: "Use $clangd-cli to inspect C++ symbols, definitions, references, hover information, and diagnostics."
