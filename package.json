@@ -1,0 +1,46 @@
+{
+  "name": "clangd-cli",
+  "version": "0.1.0",
+  "description": "Agent-friendly JSON CLI for querying C++ projects through clangd",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "clangd-cli": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "README.zh-TW.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lin-WeiChen-Taiwan/clangd-cli.git"
+  },
+  "homepage": "https://github.com/Lin-WeiChen-Taiwan/clangd-cli#readme",
+  "bugs": {
+    "url": "https://github.com/Lin-WeiChen-Taiwan/clangd-cli/issues"
+  },
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "npm run clean && node node_modules/typescript/bin/tsc -p tsconfig.json",
+    "typecheck": "node node_modules/typescript/bin/tsc -p tsconfig.json --noEmit",
+    "build:tests": "node node_modules/typescript/bin/tsc -p tsconfig.test.json",
+    "test": "npm run build:tests && node --test \".test-dist/tests/unit/*.test.js\"",
+    "test:integration": "npm run build && npm run build:tests && node --test \".test-dist/tests/integration/*.test.js\"",
+    "verify": "npm run typecheck && npm run test && npm run test:integration && npm run build && npm pack --dry-run"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "vscode-jsonrpc": "^9.0.0",
+    "vscode-languageserver-protocol": "^3.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  }
+}
