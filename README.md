@@ -17,16 +17,20 @@ clangd-cli accepts one JSON request on stdin and writes one JSON response to std
 Stable release:
 
 ```shell
-npm install --global https://github.com/Lin-WeiChen-Taiwan/clangd-cli/archive/refs/tags/v0.1.0.tar.gz
+npm install --global https://github.com/Lin-WeiChen-Taiwan/clangd-cli/releases/download/v0.1.0/clangd-cli-0.1.0.tgz
 ```
 
-Current main branch:
+Development build:
 
 ```shell
-npm install --global https://github.com/Lin-WeiChen-Taiwan/clangd-cli/archive/refs/heads/main.tar.gz
+git clone https://github.com/Lin-WeiChen-Taiwan/clangd-cli.git
+cd clangd-cli
+npm ci
+npm run build
+npm install --global .
 ```
 
-This project is intentionally not published to the npm registry. Release tags contain the compiled `dist` artifacts, and npm installs the runtime dependencies from GitHub source archives. Archive URLs avoid inconsistent Git dependency extraction in npm 11 on Windows.
+This project is intentionally not published to the npm registry. GitHub Releases contain installable npm `.tgz` assets built from tagged source. Generated `dist` files are included in the package but are not tracked in Git.
 
 ## Quick Start
 

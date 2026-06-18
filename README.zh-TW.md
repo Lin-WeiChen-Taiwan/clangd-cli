@@ -17,16 +17,20 @@ clangd-cli 是提供給 Agent 使用的 C/C++ 語意查詢 CLI，底層透過 [c
 穩定版本：
 
 ```powershell
-npm install --global https://github.com/Lin-WeiChen-Taiwan/clangd-cli/archive/refs/tags/v0.1.0.tar.gz
+npm install --global https://github.com/Lin-WeiChen-Taiwan/clangd-cli/releases/download/v0.1.0/clangd-cli-0.1.0.tgz
 ```
 
-目前 main：
+開發版本：
 
 ```powershell
-npm install --global https://github.com/Lin-WeiChen-Taiwan/clangd-cli/archive/refs/heads/main.tar.gz
+git clone https://github.com/Lin-WeiChen-Taiwan/clangd-cli.git
+cd clangd-cli
+npm ci
+npm run build
+npm install --global .
 ```
 
-此專案不會發布到 npm registry。Release tag 會包含已編譯的 `dist`，npm 會從 GitHub source archive 安裝 runtime dependencies。使用 archive URL 可避開 npm 11 在 Windows 上不穩定的 Git dependency extraction。
+此專案不會發布到 npm registry。GitHub Release 會提供從 tag source 建置的 npm `.tgz` asset。產生的 `dist` 會包含在套件內，但不會提交到 Git。
 
 ## 快速開始
 

@@ -1,0 +1,68 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install LLVM tools
+        run: sudo apt-get update && sudo apt-get install -y clang clangd cmake ninja-build
+
+      - run: npm ci
+      - run: npm audit
+      - run: npm run verify
+
+      - name: Validate tag version
+        id: version
+        shell: bash
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          expected_tag="v${version}"
+          if [[ "${GITHUB_REF_NAME}" != "${expected_tag}" ]]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match package version ${version}" >&2
+            exit 1
+          fi
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+          echo "filename=clangd-cli-${version}.tgz" >> "${GITHUB_OUTPUT}"
+
+      - name: Build release package
+        id: package
+        shell: bash
+        run: |
+          filename="$(npm pack --silent)"
+          expected="${{ steps.version.outputs.filename }}"
+          if [[ "${filename}" != "${expected}" ]]; then
+            echo "Expected ${expected}, got ${filename}" >&2
+            exit 1
+          fi
+          tar -tzf "${filename}" | grep -Fx "package/dist/cli.js"
+          tar -tzf "${filename}" | grep -Fx "package/package.json"
+          tar -tzf "${filename}" | grep -Fx "package/README.md"
+          tar -tzf "${filename}" | grep -Fx "package/LICENSE"
+          echo "path=${filename}" >> "${GITHUB_OUTPUT}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            "${{ steps.package.outputs.path }}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --verify-tag \
+            --title "clangd-cli ${{ steps.version.outputs.version }}" \
+            --generate-notes
